@@ -1,6 +1,5 @@
-package com.example.quran.ui.theme
+package com.example.quran.core.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -12,9 +11,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary = PrimaryLight,
+    secondary = SecondaryLight,
+    tertiary = SecondaryLight
 )
 
 private val LightColorScheme = lightColorScheme(
