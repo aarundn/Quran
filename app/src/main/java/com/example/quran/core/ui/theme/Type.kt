@@ -91,6 +91,6 @@ val Typography = Typography(
     displayMedium = TextStyle(
         fontFamily = Poppins,
         fontWeight = FontWeight.Medium,
-        fontSize = 12.sp,
+        fontSize = 14.sp,
         )
 )

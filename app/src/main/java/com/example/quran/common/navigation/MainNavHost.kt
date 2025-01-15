@@ -11,11 +11,12 @@ import com.example.quran.features.welcome.presentation.getstarted.GetStartedScre
 @Composable
 fun MainNavHost(
     navController: NavHostController,
+    startDestination: String
 ) {
 
     NavHost(
         navController = navController,
-        startDestination = Destination.GetStarted.route,
+        startDestination = startDestination,
     )
     {
         composable(route = Destination.GetStarted.route) { GetStartedScreen(navController = navController) }
