@@ -10,4 +10,11 @@ data class Surah(
     val englishNameTranslation: String,
     val numberOfAyahs: Int,
     val revelationType: String,
+    val ayahs: List<Ayahs>? = null
+)
+@Serializable
+data class Ayahs(
+    val number: Int? = null,
+    val text: String? = null,
+    val audio : String? = null,
 )

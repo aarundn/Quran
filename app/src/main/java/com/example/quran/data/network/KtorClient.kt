@@ -1,6 +1,8 @@
 package com.example.quran.data.network
 
+import com.example.quran.domain.model.Ayahs
 import com.example.quran.domain.model.Surah
+import com.example.quran.domain.model.SurahDetailsResponse
 import com.example.quran.domain.model.SurahResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -37,5 +39,9 @@ class KtorClient {
      suspend fun getSurahs(): List<Surah> {
         val surahResponse: SurahResponse = client.get("surah").body()
          return surahResponse.data
+    }
+    suspend fun getSurahDetails(surahNumber: Int): List<Ayahs> {
+        val surahResponse: SurahDetailsResponse = client.get("surah/$surahNumber/ar.alafasy").body()
+        return surahResponse.data.ayahs!!
     }
 }

@@ -5,6 +5,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.example.quran.R
 
@@ -46,7 +47,7 @@ val Typography = Typography(
         fontFamily = Amiri,
         fontWeight = FontWeight.Bold,
         fontSize = 18.sp,
-        lineHeight = 25.2.sp // 140%
+        lineHeight = 2.5.em // 140%
     ),
     bodyMedium = TextStyle(
         fontFamily = Amiri,

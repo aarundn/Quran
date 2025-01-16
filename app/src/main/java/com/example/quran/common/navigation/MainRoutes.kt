@@ -15,6 +15,9 @@ sealed interface Destination {
     }
     data object Details:Destination {
         override val route: String
-            get() = "details_screen"
+            get() = "details_screen/{itemId}"
+        fun createRoute(itemId: String): String {
+            return "details_screen/$itemId"
+        }
     }
 }
