@@ -5,6 +5,6 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 
 @Composable
-fun GetStartedScreen(modifier: Modifier = Modifier, navController: NavHostController) {
+fun GetStartedScreen(modifier: Modifier = Modifier) {
 
 }

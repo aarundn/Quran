@@ -1,6 +1,5 @@
 package com.example.quran.features.surah.presentation.home
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -11,9 +10,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -21,23 +18,19 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import com.example.quran.R
 import com.example.quran.common.components.TopAppBar
-import com.example.quran.common.navigation.Destination
+import com.example.quran.core.QuranAppState
 import com.example.quran.domain.model.Surah
 import com.example.quran.features.surah.presentation.components.Banner
 import com.example.quran.features.surah.presentation.components.SurahItem
-import com.example.quran.features.surah.presentation.details.DetailsViewModel
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
-import kotlinx.serialization.builtins.serializer
 
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = hiltViewModel(),
-    navController: NavController
+    appState: QuranAppState,
+    goToDetails: (Int) -> Unit
 ) {
     viewModel.getSurahs()
     val surahs = viewModel.surahs.collectAsStateWithLifecycle()
@@ -52,7 +45,7 @@ fun HomeScreen(
             )
         }
     ) { innerPadding ->
-        HomeContent(innerPadding, surahs, navController = navController)
+        HomeContent(innerPadding, surahs, appState = appState, goToDetails = goToDetails)
     }
 
 }
@@ -61,7 +54,8 @@ fun HomeScreen(
 private fun HomeContent(
     innerPadding: PaddingValues,
     surahs: State<List<Surah>>,
-    navController: NavController
+    appState: QuranAppState,
+    goToDetails: (Int) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier
@@ -88,9 +82,7 @@ private fun HomeContent(
                 surahType = currentSurahs.revelationType,
                 versesCount = currentSurahs.numberOfAyahs,
                 onClick = {
-                    navController.navigate(
-                        Destination.Details.createRoute("${currentSurahs.number}")
-                    )
+                    goToDetails(currentSurahs.number)
                 }
             )
         }

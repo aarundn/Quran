@@ -88,6 +88,8 @@ dependencies {
 
     //hilts compose
     implementation(libs.androidx.hilt.navigation.compose)
+    // compose nav host & type safe navigation
+    implementation(libs.androidx.navigation.compose)
 }
 
 kapt {

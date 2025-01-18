@@ -17,10 +17,13 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val startDestination = Destination.Home.route
-            val navController = rememberNavController()
+            val startDestination = Destination.Home
+            val state = rememberQuranAppState(
+                mainStartDestination = startDestination,
+                mainNavController = rememberNavController()
+            )
             QuranTheme {
-                        MainNavHost(navController = navController, startDestination = startDestination)
+                MainNavHost(appState = state)
             }
         }
     }

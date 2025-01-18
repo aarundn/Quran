@@ -1,23 +1,16 @@
 package com.example.quran.common.navigation
 
+import kotlinx.serialization.Serializable
 
 
 sealed interface Destination {
 
-    val route:String
-    data object GetStarted:Destination {
-        override val route: String
-            get() = "getStarted_screen"
-    }
-    data object Home:Destination {
-        override val route: String
-            get() = "home_screen"
-    }
-    data object Details:Destination {
-        override val route: String
-            get() = "details_screen/{itemId}"
-        fun createRoute(itemId: String): String {
-            return "details_screen/$itemId"
-        }
-    }
+
+    @Serializable
+    data object GetStarted:Destination
+    @Serializable
+    data object Home:Destination
+    @Serializable
+    data class Details(val surahId: Int):Destination
+
 }
