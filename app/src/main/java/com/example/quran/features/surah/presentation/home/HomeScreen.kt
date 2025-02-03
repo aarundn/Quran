@@ -2,15 +2,16 @@ package com.example.quran.features.surah.presentation.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -32,8 +33,8 @@ fun HomeScreen(
     appState: QuranAppState,
     goToDetails: (Int) -> Unit
 ) {
-    viewModel.getSurahs()
-    val surahs = viewModel.surahs.collectAsStateWithLifecycle()
+
+    val state = viewModel.state.collectAsStateWithLifecycle()
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -45,7 +46,24 @@ fun HomeScreen(
             )
         }
     ) { innerPadding ->
-        HomeContent(innerPadding, surahs, appState = appState, goToDetails = goToDetails)
+        when {
+
+            state.value.isLoading -> {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) { CircularProgressIndicator() }
+            }
+
+            else -> {
+                HomeContent(
+                    innerPadding,
+                    state.value.surahs,
+                    appState = appState,
+                    goToDetails = goToDetails
+                )
+            }
+        }
     }
 
 }
@@ -53,7 +71,7 @@ fun HomeScreen(
 @Composable
 private fun HomeContent(
     innerPadding: PaddingValues,
-    surahs: State<List<Surah>>,
+    surahs: List<Surah>,
     appState: QuranAppState,
     goToDetails: (Int) -> Unit
 ) {
@@ -73,8 +91,8 @@ private fun HomeContent(
         item {
             Banner(modifier = Modifier)
         }
-        items(surahs.value.size) { index ->
-            val currentSurahs = surahs.value[index]
+        items(surahs.size) { index ->
+            val currentSurahs = surahs[index]
             SurahItem(
                 number = currentSurahs.number,
                 arabicName = currentSurahs.name,
