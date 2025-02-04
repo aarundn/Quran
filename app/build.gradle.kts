@@ -15,7 +15,7 @@ android {
     defaultConfig {
         applicationId = "com.example.quran"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -92,6 +92,11 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
     // compose nav host & type safe navigation
     implementation(libs.androidx.navigation.compose)
+
+    //exo player
+    implementation(libs.androidx.media3.exoplayer)
+    implementation(libs.androidx.media3.exoplayer.dash)
+    implementation(libs.androidx.media3.ui)
 }
 
 kapt {
