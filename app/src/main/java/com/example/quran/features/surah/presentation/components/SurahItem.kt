@@ -1,6 +1,5 @@
 package com.example.quran.features.surah.presentation.components
 
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,6 +19,10 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,6 +31,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.quran.R
+import com.example.quran.domain.model.ScreenBanner
 
 @Composable
 fun SurahItem(
@@ -47,12 +51,16 @@ fun SurahItem(
             modifier = modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Box(modifier = Modifier.padding(8.dp).size(40.dp)) {
-            Image(
-                imageVector = ImageVector.vectorResource(id = R.drawable.octagon),
-                contentDescription = "Star",
-                modifier = Modifier.size(50.dp),
-            )
+            Box(
+                modifier = Modifier
+                    .padding(8.dp)
+                    .size(40.dp)
+            ) {
+                Image(
+                    imageVector = ImageVector.vectorResource(id = R.drawable.octagon),
+                    contentDescription = "Star",
+                    modifier = Modifier.size(50.dp),
+                )
                 Text(
                     text = number.toString(),
                     color = MaterialTheme.colorScheme.onBackground,
@@ -67,6 +75,7 @@ fun SurahItem(
                 englishName = englishName,
                 surahType = surahType,
                 versesCount = versesCount,
+                screenBanner = ScreenBanner.HOME_BANNER
             )
             Text(
                 text = arabicName,
@@ -85,23 +94,38 @@ fun EnglishLabel(
     modifier: Modifier,
     englishName: String,
     surahType: String,
-    versesCount: Int
+    versesCount: Int,
+    screenBanner: ScreenBanner
 ) {
+    var isHomeScreen by remember { mutableStateOf(true) }
+    isHomeScreen = when (screenBanner) {
+        ScreenBanner.HOME_BANNER -> {
+            true
+        }
+
+        ScreenBanner.DETAILS_BANNER -> {
+            false
+        }
+    }
     Column(modifier = modifier) {
-        Text(
-            text = englishName,
-            color = MaterialTheme.colorScheme.onBackground,
-            style = MaterialTheme.typography.labelMedium,
-        )
+        if (ScreenBanner.HOME_BANNER == screenBanner) {
+            Text(
+                text = englishName,
+                color = MaterialTheme.colorScheme.onBackground,
+                style = MaterialTheme.typography.labelMedium,
+            )
+        }
         Spacer(modifier = Modifier.height(4.dp))
         Row(
             modifier = Modifier.wrapContentWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
+            val color =if (isHomeScreen) MaterialTheme.colorScheme.secondary else
+                MaterialTheme.colorScheme.onBackground
             Text(
                 text = surahType,
-                color = MaterialTheme.colorScheme.secondary,
+                color = color,
                 style = MaterialTheme.typography.labelSmall,
             )
             Spacer(modifier = Modifier.width(4.dp))
@@ -109,85 +133,15 @@ fun EnglishLabel(
                 modifier = Modifier
                     .clip(CircleShape)
                     .size(4.dp)
-                    .background(color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f))
+                    .background(color = color.copy(alpha = 0.5f))
             )
             Spacer(modifier = Modifier.width(4.dp))
             Text(
                 text = "$versesCount VERSES",
-                color = MaterialTheme.colorScheme.secondary,
+                color = color,
                 style = MaterialTheme.typography.labelSmall,
             )
         }
 
     }
 }
-/**@Composable
-//fun StarOfDavid(
-//    modifier: Modifier = Modifier,
-//    color: Color = Color.Black,
-//    strokeWidth: Float
-//) {
-//    Canvas(
-//        modifier = modifier
-//    ) {
-//        val width = size.width
-//        val height = size.height
-//        val minDimension = minOf(width, height)
-//
-//        // Scale everything to fit within the available space
-//        val scale = minDimension / 100f
-//
-//        val centerX = width / 2f
-//        val centerY = height / 2f
-//
-//        // Create the octagon star path
-//        val starPath = Path().apply {
-//            // Starting from top point
-//            moveTo(centerX, centerY - 40f * scale)  // Top
-//            lineTo(centerX + 20f * scale, centerY - 20f * scale)  // Top-right corner
-//            lineTo(centerX + 40f * scale, centerY)  // Right
-//            lineTo(centerX + 20f * scale, centerY + 20f * scale)  // Bottom-right corner
-//            lineTo(centerX, centerY + 40f * scale)  // Bottom
-//            lineTo(centerX - 20f * scale, centerY + 20f * scale)  // Bottom-left corner
-//            lineTo(centerX - 40f * scale, centerY)  // Left
-//            lineTo(centerX - 20f * scale, centerY - 20f * scale)  // Top-left corner
-//            close()
-//        }
-//
-//        // Draw the outline
-//        drawPath(
-//            path = starPath,
-//            color = color,
-//            style = Stroke(
-//                width = strokeWidth,
-//                join = StrokeJoin.Round,
-//                cap = StrokeCap.Round
-//            )
-//        )
-//    }
-//}
-//
-//@Composable
-//fun OctagonStarOutline(modifier: Modifier = Modifier, color: Color, shapeSize: Dp, strokeWidth: Dp) {
-//    Canvas(modifier = modifier.size(shapeSize)) {
-//        val path = Path().apply {
-//            val center = Offset(size.width / 2, size.height / 2)
-//            val radius = size.minDimension / 2
-//
-//            for (i in 0 until 8) {
-//                val angle = Math.PI / 4 * i
-//                val x = (center.x + radius * Math.cos(angle)).toFloat()
-//                val y = (center.y + radius * Math.sin(angle)).toFloat()
-//                if (i == 0) moveTo(x, y) else lineTo(x, y)
-//            }
-//            close()
-//        }
-//
-//        drawPath(
-//            path = path,
-//            color = color,
-//            style = Stroke(strokeWidth.toPx())
-//        )
-//    }
-//}
-**/
