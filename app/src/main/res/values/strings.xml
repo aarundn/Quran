@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Quran</string>
+    <string name="asslamualaikum">Asslamualaikum</string>
+    <string name="quran_app">Quran App</string>
 </resources>

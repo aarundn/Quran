@@ -1,23 +1,24 @@
 package com.example.quran.features.surah.presentation.details
 
-import android.util.Log
+
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.example.quran.common.navigation.Destination.Details
+import com.example.quran.core.QuranAppState
+
 
 
 fun NavController.navigateToDetailsScreen(surahId : Int) {
-    Log.d("Details", "detailsRoute: $surahId")
-    navigate(Details(surahId))
+    navigate(Details(surahId = surahId))
 }
-fun NavGraphBuilder.detailsRoute() {
+fun NavGraphBuilder.detailsRoute(appState: QuranAppState) {
     composable<Details> { backStackEntry ->
-        Log.d("Details", "detailsRoute: $backStackEntry")
-        val detailRoute = backStackEntry.toRoute<Details>()
-        Log.d("Details", "detailsRoute: ${detailRoute.surahId}")
-
-        DetailsScreen(itemId = detailRoute.surahId.toString())
+        val surahId = backStackEntry.toRoute<Details>().surahId
+        DetailsScreen(
+            surahId = surahId,
+            onBack = appState.mainNavController::popBackStack,
+            )
     }
 }

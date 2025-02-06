@@ -49,7 +49,7 @@ fun MainNavHost(
     )
     {
         homeRoute(appState = appState)
-        detailsRoute()
+        detailsRoute(appState = appState)
     }
 
 }

@@ -2,12 +2,10 @@ package com.example.quran.features.surah.presentation.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -15,11 +13,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.quran.R
+import com.example.quran.common.components.LoadingIndicator
 import com.example.quran.common.components.TopAppBar
 import com.example.quran.core.QuranAppState
 import com.example.quran.domain.model.Surah
@@ -36,23 +36,24 @@ fun HomeScreen(
 
     val state = viewModel.state.collectAsStateWithLifecycle()
     Scaffold(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
         topBar = {
             TopAppBar(
-                title = "Al-Fatiah",
+                title = stringResource(R.string.quran_app),
                 rightIcon = ImageVector.vectorResource(id = R.drawable.menu),
+                leftIcon = ImageVector.vectorResource(id = R.drawable.search),
+                onClick = {
+                    // TODO: Opening the drawer
+                }
             )
         }
     ) { innerPadding ->
         when {
 
             state.value.isLoading -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) { CircularProgressIndicator() }
+                LoadingIndicator()
             }
 
             else -> {
@@ -84,7 +85,7 @@ private fun HomeContent(
     ) {
         item {
             Text(
-                text = "Asslamualaikum",
+                text = stringResource(R.string.asslamualaikum),
                 style = MaterialTheme.typography.headlineMedium,
             )
         }
@@ -94,11 +95,11 @@ private fun HomeContent(
         items(surahs.size) { index ->
             val currentSurahs = surahs[index]
             SurahItem(
-                number = currentSurahs.number,
-                arabicName = currentSurahs.name,
-                englishName = currentSurahs.englishName,
-                surahType = currentSurahs.revelationType,
-                versesCount = currentSurahs.numberOfAyahs,
+                number = currentSurahs.number!!,
+                arabicName = currentSurahs.name!!,
+                englishName = currentSurahs.englishName!!,
+                surahType = currentSurahs.revelationType!!,
+                versesCount = currentSurahs.numberOfAyahs!!,
                 onClick = {
                     goToDetails(currentSurahs.number)
                 }

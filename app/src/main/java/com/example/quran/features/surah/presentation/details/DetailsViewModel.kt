@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
-import com.example.quran.domain.model.Ayahs
 import com.example.quran.domain.usecases.GetSurahDetailsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -15,6 +14,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -25,8 +25,8 @@ class DetailsViewModel @Inject constructor(
 ): ViewModel() {
 
 
-    private val _ayahs = MutableStateFlow<List<Ayahs>>(emptyList())
-    val ayahs = _ayahs.asStateFlow()
+    private val _state = MutableStateFlow(DetailsState())
+    val state = _state.asStateFlow()
     private var _exoPlayer: ExoPlayer? = null
     val exoPlayer: ExoPlayer
         get() = _exoPlayer ?: createPlayer().also { _exoPlayer = it }
@@ -39,8 +39,13 @@ class DetailsViewModel @Inject constructor(
 
 
     suspend fun getSurahDetails(surahNumber: Int) {
-        detailsUseCase.invoke(surahNumber).collect{
-            _ayahs.value = it.first()
+        _state.update {
+            it.copy(isLoading = true)
+        }
+        detailsUseCase.invoke(surahNumber).collect{ surahs ->
+            _state.update {
+                it.copy(surahs = surahs.first(), isLoading = false)
+            }
         }
     }
 

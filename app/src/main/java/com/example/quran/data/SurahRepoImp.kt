@@ -1,6 +1,5 @@
 package com.example.quran.data
 
-import com.example.quran.domain.model.Ayahs
 import com.example.quran.domain.model.Surah
 import com.example.quran.domain.model.SurahDetailsResponse
 import com.example.quran.domain.model.SurahResponse
@@ -22,10 +21,10 @@ class SurahRepoImp @Inject constructor(
         emit(surahResponse.data)
     }
 
-    override suspend fun getSurahDetails(surahNumber: Int): Flow<List<Ayahs>>{
+    override suspend fun getSurahDetails(surahNumber: Int): Flow<Surah>{
         return flow {
             val surahResponse: SurahDetailsResponse = client.get("surah/$surahNumber/ar.alafasy").body()
-            surahResponse.data.ayahs?.let { emit(it) }
+            emit(surahResponse.data)
         }
     }
 }

@@ -18,16 +18,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.quran.core.ui.theme.QuranTheme
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
-import com.example.quran.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopAppBar(
     title: String,
     rightIcon: ImageVector,
+    leftIcon: ImageVector,
     modifier: Modifier = Modifier,
+    onClick: () -> Unit
 ) {
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
@@ -44,24 +44,24 @@ fun TopAppBar(
         },
         navigationIcon = {
             IconButton(
-                onClick = { /* do something */ }) {
+                onClick = { onClick()}) {
                 Icon(
                     imageVector = rightIcon,
                     contentDescription = "Localized description",
                     tint = MaterialTheme.colorScheme.secondary,
-                    modifier = Modifier
+                    modifier = modifier
                         .size(40.dp)
                         .padding(8.dp)
                 )
             }
         },
         actions = {
-            IconButton(onClick = { /* do something */ }) {
+            IconButton(onClick = {}) {
                 Icon(
-                    imageVector = ImageVector.vectorResource(id = R.drawable.search),
+                    imageVector = leftIcon,
                     contentDescription = "Localized description",
                     tint = MaterialTheme.colorScheme.secondary,
-                    modifier = Modifier
+                    modifier = modifier
                         .size(40.dp)
                         .padding(8.dp)
                 )
@@ -78,6 +78,8 @@ private fun TopAppBarPreview() {
         TopAppBar(
             title = "Quran App",
             rightIcon = Icons.Filled.Menu,
+            leftIcon = Icons.Filled.Search,
+            onClick = {}
         )
     }
 }
