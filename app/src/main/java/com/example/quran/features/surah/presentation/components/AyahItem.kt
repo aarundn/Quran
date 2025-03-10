@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,6 +33,9 @@ import com.example.quran.domain.model.Ayahs
 @Composable
 fun AyahItem(
     modifier: Modifier = Modifier,
+    showTimeLine: Boolean,
+    currentPosition: Long,
+    duration: Long,
     ayahs: Ayahs,
     @DrawableRes audioIcon: Int,
     onClick: () -> Unit
@@ -45,13 +49,16 @@ fun AyahItem(
         IconsLabel(
             number = ayahs.number ?: 0,
             onClick = onClick,
-            audioIcon = audioIcon
+            audioIcon = audioIcon,
+            currentPosition = currentPosition,
+            duration = duration,
+            showTimeLine = showTimeLine
         )
         Spacer(modifier = modifier.height(8.dp))
         Text(
             text = ayahs.text ?: "",
             style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onPrimary,
+            color = MaterialTheme.colorScheme.onBackground,
             textAlign = TextAlign.Right,
             modifier = modifier.fillMaxWidth()
         )
@@ -65,59 +72,77 @@ fun AyahItem(
 @Composable
 fun IconsLabel(
     number: Int,
+    showTimeLine: Boolean,
     onClick: () -> Unit,
     @DrawableRes audioIcon: Int,
+    currentPosition: Long,
+    duration: Long,
     modifier: Modifier = Modifier
 ) {
-    Row(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
             .background(
                 MaterialTheme.colorScheme.surfaceContainer,
                 shape = RoundedCornerShape(15.dp)
             ),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
     ) {
-        Box(
-            modifier = modifier
-                .wrapContentSize()
-                .padding(8.dp)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
                 .background(
-                    color = MaterialTheme.colorScheme.primary,
-                    shape = CircleShape
-                )
-                .size(48.dp),
-            contentAlignment = Alignment.Center
+                    MaterialTheme.colorScheme.surfaceContainer,
+                    shape = RoundedCornerShape(15.dp)
+                ),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = number.toString(),
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onPrimary,
-                textAlign = TextAlign.Center,
+            Box(
+                modifier = modifier
+                    .wrapContentSize()
+                    .padding(8.dp)
+                    .background(
+                        color = MaterialTheme.colorScheme.primary,
+                        shape = CircleShape
+                    )
+                    .size(48.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = number.toString(),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    textAlign = TextAlign.Center,
+                )
+            }
+            Spacer(modifier = modifier.weight(1f))
+            Icon(
+                imageVector = ImageVector.vectorResource(R.drawable.share),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary
+            )
+            Spacer(modifier = modifier.size(16.dp))
+            Icon(
+                imageVector = ImageVector.vectorResource(audioIcon),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = modifier.clickable {
+                    onClick()
+                }
+            )
+            Spacer(modifier = modifier.size(16.dp))
+            Icon(
+                imageVector = ImageVector.vectorResource(R.drawable.bookmark),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary
+            )
+            Spacer(modifier = modifier.size(8.dp))
+        }
+        if (showTimeLine){
+            LinearProgressIndicator(
+                modifier = modifier.fillMaxWidth().padding(8.dp),
+                progress = { currentPosition.toFloat()/ duration.toFloat()},
             )
         }
-        Spacer(modifier = modifier.weight(1f))
-        Icon(
-            imageVector = ImageVector.vectorResource(R.drawable.share),
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary
-        )
-        Spacer(modifier = modifier.size(16.dp))
-        Icon(
-            imageVector = ImageVector.vectorResource(audioIcon),
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary,
-            modifier = modifier.clickable {
-                onClick()
-            }
-        )
-        Spacer(modifier = modifier.size(16.dp))
-        Icon(
-            imageVector = ImageVector.vectorResource(R.drawable.bookmark),
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary
-        )
-        Spacer(modifier = modifier.size(8.dp))
     }
 }

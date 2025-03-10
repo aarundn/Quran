@@ -88,7 +88,7 @@ class DetailsViewModel @Inject constructor(
             while (exoPlayer.isPlaying) {
                 _currentPosition.value = exoPlayer.currentPosition
                 _duration.value = exoPlayer.duration
-                delay(500)
+                delay(10)
             }
         }
     }

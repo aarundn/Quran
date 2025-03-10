@@ -28,7 +28,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.quran.R
 import com.example.quran.common.components.LoadingIndicator
 import com.example.quran.common.components.TopAppBar
-import com.example.quran.domain.model.Ayahs
+import com.example.quran.domain.model.Surah
 import com.example.quran.features.surah.presentation.components.AyahItem
 import com.example.quran.features.surah.presentation.components.DetailsBanner
 
@@ -75,15 +75,13 @@ fun DetailsScreen(
             when {
                 state.isLoading -> LoadingIndicator()
                 else -> {
-                    state.surahs.ayahs?.let {
-                        DetailsContent(
-                            ayahs = it,
-                            currentPosition = currentPosition,
-                            duration = duration,
-                            modifier = modifier,
-                            viewModel = viewModel
-                        )
-                    }
+                    DetailsContent(
+                        surah = state.surahs,
+                        currentPosition = currentPosition,
+                        duration = duration,
+                        modifier = modifier,
+                        viewModel = viewModel
+                    )
                 }
             }
         }
@@ -93,7 +91,7 @@ fun DetailsScreen(
 
 @Composable
 fun DetailsContent(
-    ayahs: List<Ayahs>,
+    surah: Surah,
     currentPosition: Long,
     duration: Long,
     modifier: Modifier,
@@ -106,23 +104,34 @@ fun DetailsContent(
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         item {
-            DetailsBanner()
+            DetailsBanner(
+                surahName =  surah.name ?: "",
+                surahType = surah.revelationType ?: "",
+                versesCount = surah.numberOfAyahs ?: 0,
+                englishName = surah.englishName ?: "",
+                modifier = modifier
+            )
         }
-        items(ayahs.size) { index ->
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.SpaceBetween,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                AyahItem(
-                    ayahs = ayahs[index],
-                    audioIcon = if (clickedIndex == index)R.drawable.pause else R.drawable.play,
-                    onClick = {
-                        clickedIndex = index
-                        viewModel.setMediaList(ayahs[index].audio ?: "")
-                        viewModel.togglePlayback()
-                    }
-                )
+        surah.ayahs?.size?.let {
+            items(it) { index ->
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.SpaceBetween,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    AyahItem(
+                        currentPosition = currentPosition,
+                        duration = duration,
+                        ayahs = surah.ayahs[index],
+                        audioIcon = if (clickedIndex == index)R.drawable.pause else R.drawable.play,
+                        showTimeLine = clickedIndex == index,
+                        onClick = {
+                            clickedIndex = index
+                            viewModel.setMediaList(surah.ayahs[index].audio ?: "")
+                            viewModel.togglePlayback()
+                        }
+                    )
+                }
             }
         }
     }

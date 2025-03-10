@@ -29,7 +29,12 @@ import com.example.quran.core.ui.theme.QuranTheme
 import com.example.quran.domain.model.ScreenBanner
 
 @Composable
-fun DetailsBanner(modifier: Modifier = Modifier) {
+fun DetailsBanner(
+    surahName: String,
+    surahType: String,
+    versesCount: Int,
+    englishName: String,
+    modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(20.dp))
@@ -50,13 +55,13 @@ fun DetailsBanner(modifier: Modifier = Modifier) {
         ) {
 
             Text(
-                text = "Al-Fatihah",
+                text = surahName,
                 style = MaterialTheme.typography.headlineLarge,
                 color = MaterialTheme.colorScheme.onBackground,
             )
             Spacer(modifier = modifier.height(16.dp))
             Text(
-                text = "The Opening",
+                text = englishName,
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onBackground,
 
@@ -71,8 +76,8 @@ fun DetailsBanner(modifier: Modifier = Modifier) {
             Spacer(modifier = modifier.height(16.dp))
             EnglishLabel(
                 modifier = modifier,
-                englishName = "", versesCount = 7,
-                surahType = "MECCAN",
+                englishName = "", versesCount = versesCount,
+                surahType = surahType,
                 screenBanner = ScreenBanner.DETAILS_BANNER
             )
             Spacer(modifier = modifier.height(34.dp))
@@ -90,6 +95,11 @@ fun DetailsBanner(modifier: Modifier = Modifier) {
 @Composable
 private fun DetailsBannerPreview() {
     QuranTheme {
-        DetailsBanner()
+        DetailsBanner(
+            surahName = "الفاتحة",
+            surahType = "Meccan",
+            versesCount = 7,
+            englishName = "Al-Fatihah"
+        )
     }
 }
