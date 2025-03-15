@@ -17,10 +17,13 @@ class SurahRepoImp @Inject constructor(
     override suspend fun getSurahs(surahNumber: Int): Flow<List<Surah>>  = flow {
         val surah = mutableListOf<Surah>()
         for (i in surahNumber..10){
-            val surahResponse: SurahResponse = client.get("surah/$i").body()
-            surah.add(surahResponse.data[i])
-            emit(surah)
+            val surahResponse: SurahResponse = client.get("surah").body()
+            if (surahResponse.data[surahNumber].number!!>= 10)
+            surah.add(surahResponse.data[i + 10])
+            else
+                surah.add(surahResponse.data[i])
         }
+        emit(surah)
     }
 
     override suspend fun getSurahDetails(surahNumber: Int): Flow<Surah>{

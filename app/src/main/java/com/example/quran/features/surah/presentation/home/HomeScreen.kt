@@ -125,7 +125,7 @@ private fun HomeContent(
                 }
             )
             if (shouldLoadMore && index != surahs.size - 1) {
-                onLoadMore(currentSurahs.number)
+                onLoadMore(currentSurahs.number/10)
             }
         }
         if (shouldLoadMore && surahs.isEmpty()) {
