@@ -6,10 +6,15 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -35,6 +40,10 @@ fun HomeScreen(
 ) {
 
     val state = viewModel.state.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.getSurahs(1)
+    }
     Scaffold(
         modifier = modifier
             .fillMaxSize()
@@ -61,6 +70,7 @@ fun HomeScreen(
                     innerPadding,
                     state.value.surahs,
                     appState = appState,
+                    onLoadMore = { viewModel.getSurahs(it) },
                     goToDetails = goToDetails
                 )
             }
@@ -74,8 +84,18 @@ private fun HomeContent(
     innerPadding: PaddingValues,
     surahs: List<Surah>,
     appState: QuranAppState,
+    onLoadMore: (Int) -> Unit = {},
     goToDetails: (Int) -> Unit
 ) {
+
+    val listState = rememberLazyListState()
+
+    val shouldLoadMore by remember {
+        derivedStateOf {
+            val lastVisibleIndex = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
+            lastVisibleIndex >= surahs.size - 2 && surahs.isNotEmpty()
+        }
+    }
     LazyColumn(
         modifier = Modifier
             .padding(innerPadding)
@@ -104,6 +124,14 @@ private fun HomeContent(
                     goToDetails(currentSurahs.number)
                 }
             )
+            if (shouldLoadMore && index != surahs.size - 1) {
+                onLoadMore(currentSurahs.number)
+            }
+        }
+        if (shouldLoadMore && surahs.isEmpty()) {
+            item {
+                LoadingIndicator()
+            }
         }
     }
 }

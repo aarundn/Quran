@@ -1,5 +1,6 @@
 package com.example.quran.features.surah.presentation.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.quran.domain.repository.SurahRepository
@@ -16,13 +17,12 @@ class HomeViewModel @Inject constructor(
 ): ViewModel() {
     private val _state = MutableStateFlow(HomeState())
     val state = _state.asStateFlow()
-    init {
-        getSurahs()
-    }
-    private fun getSurahs() {
+
+    fun getSurahs(surahNumber: Int){
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
-            surahRepository.getSurahs().collect{ surahs ->
+            surahRepository.getSurahs(surahNumber).collect{ surahs ->
+                Log.d("HomeViewModel", "getSurahs: $surahs")
                 _state.update { it.copy(
                     isLoading = false,
                     surahs = surahs

@@ -14,11 +14,13 @@ import javax.inject.Inject
 class SurahRepoImp @Inject constructor(
     private val client: HttpClient
 ): SurahRepository {
-    override suspend fun getSurahs(): Flow<List<Surah>>  = flow {
-
-            val surahResponse: SurahResponse = client.get("surah").body()
-
-        emit(surahResponse.data)
+    override suspend fun getSurahs(surahNumber: Int): Flow<List<Surah>>  = flow {
+        val surah = mutableListOf<Surah>()
+        for (i in surahNumber..10){
+            val surahResponse: SurahResponse = client.get("surah/$i").body()
+            surah.add(surahResponse.data[i])
+            emit(surah)
+        }
     }
 
     override suspend fun getSurahDetails(surahNumber: Int): Flow<Surah>{
