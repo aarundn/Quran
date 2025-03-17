@@ -1,4 +1,5 @@
 package com.example.quran.domain.model
+import com.example.quran.data.SurahDetailEntity
 import kotlinx.serialization.Serializable
 
 
@@ -17,3 +18,12 @@ data class Ayahs(
     val text: String? = null,
     val audio: String? = null,
 )
+
+
+fun Ayahs.toEntity(): SurahDetailEntity {
+    return SurahDetailEntity(
+        number = number?:0,
+       text = text?:"",
+        audioUrl = audio,
+    )
+}

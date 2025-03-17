@@ -1,12 +1,16 @@
 package com.example.quran.di
 
 
+import android.content.Context
+import androidx.room.Room
+import com.example.quran.data.AppDatabase
 import com.example.quran.domain.repository.SurahRepository
 import com.example.quran.domain.usecases.GetSurahDetailsUseCase
 import com.example.quran.domain.usecases.GetSurahsUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
@@ -62,4 +66,18 @@ object SurahModule {
     ): GetSurahsUseCase {
         return GetSurahsUseCase(surahRepository)
     }
+
+//    @Provides
+//    @Singleton
+//    fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase {
+//        return Room.databaseBuilder(
+//            context,
+//            AppDatabase::class.java,
+//            "quran_database"
+//        ).build()
+//    }
+//
+//    @Provides
+//    @Singleton
+//    fun provideSurahDao(appDatabase: AppDatabase) = appDatabase.surahDao()
 }

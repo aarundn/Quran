@@ -41,9 +41,6 @@ fun HomeScreen(
 
     val state = viewModel.state.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) {
-        viewModel.getSurahs(1)
-    }
     Scaffold(
         modifier = modifier
             .fillMaxSize()
@@ -64,14 +61,21 @@ fun HomeScreen(
             state.value.isLoading -> {
                 LoadingIndicator()
             }
-
-            else -> {
+            state.value.surahs.isNotEmpty() -> {
                 HomeContent(
                     innerPadding,
                     state.value.surahs,
                     appState = appState,
-                    onLoadMore = { viewModel.getSurahs(it) },
+                    isLoadingMore = state.value.isLoadingMore,
+                    onLoadMore = { viewModel.loadMoreSurahs(it) },
                     goToDetails = goToDetails
+                )
+            }
+            else -> {
+                Text(
+                    text = stringResource(R.string.no_data),
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(16.dp)
                 )
             }
         }
@@ -83,19 +87,23 @@ fun HomeScreen(
 private fun HomeContent(
     innerPadding: PaddingValues,
     surahs: List<Surah>,
+    isLoadingMore: Boolean = false,
     appState: QuranAppState,
     onLoadMore: (Int) -> Unit = {},
     goToDetails: (Int) -> Unit
 ) {
 
-    val listState = rememberLazyListState()
-
-    val shouldLoadMore by remember {
-        derivedStateOf {
-            val lastVisibleIndex = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
-            lastVisibleIndex >= surahs.size - 2 && surahs.isNotEmpty()
-        }
-    }
+//    val listState = rememberLazyListState()
+//
+//    val shouldLoadMore by remember {
+//        derivedStateOf {
+//            val lastVisibleIndex = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
+//            lastVisibleIndex >= surahs.size - 1 && surahs.isNotEmpty()
+//        }
+//    }
+//    if (shouldLoadMore && surahs.size < 114) {
+//        onLoadMore(surahs.size)
+//    }
     LazyColumn(
         modifier = Modifier
             .padding(innerPadding)
@@ -124,11 +132,9 @@ private fun HomeContent(
                     goToDetails(currentSurahs.number)
                 }
             )
-            if (shouldLoadMore && index != surahs.size - 1) {
-                onLoadMore(currentSurahs.number/10)
-            }
+
         }
-        if (shouldLoadMore && surahs.isEmpty()) {
+        if (isLoadingMore) {
             item {
                 LoadingIndicator()
             }

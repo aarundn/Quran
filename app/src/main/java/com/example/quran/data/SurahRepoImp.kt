@@ -1,5 +1,7 @@
 package com.example.quran.data
 
+import android.annotation.SuppressLint
+import android.util.Log
 import com.example.quran.domain.model.Surah
 import com.example.quran.domain.model.SurahDetailsResponse
 import com.example.quran.domain.model.SurahResponse
@@ -14,16 +16,24 @@ import javax.inject.Inject
 class SurahRepoImp @Inject constructor(
     private val client: HttpClient
 ): SurahRepository {
-    override suspend fun getSurahs(surahNumber: Int): Flow<List<Surah>>  = flow {
+
+    override suspend fun getSurahs(): Flow<List<Surah>>  = flow {
         val surah = mutableListOf<Surah>()
-        for (i in surahNumber..10){
+//        for (i in 1..10){
             val surahResponse: SurahResponse = client.get("surah").body()
-            if (surahResponse.data[surahNumber].number!!>= 10)
-            surah.add(surahResponse.data[i + 10])
-            else
-                surah.add(surahResponse.data[i])
-        }
-        emit(surah)
+//                surah.add(surahResponse.data)
+//        }
+        emit(surahResponse.data)
+    }
+
+    override suspend fun loadMoreSurahs(surahNumber: Int): Flow<Surah>  = flow {
+
+//            val end = minOf(surahNumber + 10, 114) // 114 is the total number of Surahs
+//            for (i in surahNumber + 1..end) { // Fetch next 10 Surahs
+//                val surahResponse: SurahResponse = client.get("surah/$i").body()
+//                Log.d("SurahRepoImp", "loadMoreSurahs: ${surahResponse.data[i]}")
+//                emit(surahResponse.data[i])
+//            }
     }
 
     override suspend fun getSurahDetails(surahNumber: Int): Flow<Surah>{

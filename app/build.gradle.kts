@@ -68,6 +68,7 @@ dependencies {
     implementation(libs.androidx.graphics.shapes.android)
     implementation(libs.androidx.paging.common.android)
     implementation(libs.androidx.paging.compose.android)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -75,6 +76,11 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    //Room for database
+    implementation(libs.androidx.room.common)
+    implementation(libs.androidx.room.ktx)
+    ksp (libs.androidx.room.compiler)
 
     //Ktor for network requests
     implementation (libs.ktor.client.android)

@@ -18,10 +18,13 @@ class HomeViewModel @Inject constructor(
     private val _state = MutableStateFlow(HomeState())
     val state = _state.asStateFlow()
 
-    fun getSurahs(surahNumber: Int){
+    init {
+        getSurahs()
+    }
+    fun getSurahs(){
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
-            surahRepository.getSurahs(surahNumber).collect{ surahs ->
+            surahRepository.getSurahs().collect{ surahs ->
                 Log.d("HomeViewModel", "getSurahs: $surahs")
                 _state.update { it.copy(
                     isLoading = false,
@@ -30,5 +33,18 @@ class HomeViewModel @Inject constructor(
             }
         }
 
+    }
+    fun loadMoreSurahs(surahNumber: Int){
+        viewModelScope.launch {
+            _state.update { it.copy(isLoadingMore = true) }
+            surahRepository.loadMoreSurahs(surahNumber).collect{ nenwSurahs ->
+                Log.d("HomeViewModel1", "loadMoreSurahs: $nenwSurahs")
+                _state.update { it.copy(
+                    isLoadingMore = false,
+                    surahs = it.surahs + nenwSurahs
+                ) }
+                Log.d("HomeViewModel1", "loadMoreSurahs: ${_state.value.surahs}")
+            }
+        }
     }
 }
