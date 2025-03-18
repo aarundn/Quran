@@ -1,9 +1,10 @@
 package com.example.quran.features.surah.presentation.home
 
-import com.example.quran.domain.model.Surah
+import com.example.quran.data.SurahEntity
+
 
 data class HomeState(
-    val surahs: List<Surah> = emptyList(),
+    val surahs: List<SurahEntity> = emptyList(),
     val isLoading: Boolean = false,
     val isLoadingMore : Boolean = false
 )

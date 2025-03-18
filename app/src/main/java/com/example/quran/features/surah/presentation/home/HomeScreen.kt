@@ -27,7 +27,7 @@ import com.example.quran.R
 import com.example.quran.common.components.LoadingIndicator
 import com.example.quran.common.components.TopAppBar
 import com.example.quran.core.QuranAppState
-import com.example.quran.domain.model.Surah
+import com.example.quran.data.SurahEntity
 import com.example.quran.features.surah.presentation.components.Banner
 import com.example.quran.features.surah.presentation.components.SurahItem
 
@@ -67,7 +67,7 @@ fun HomeScreen(
                     state.value.surahs,
                     appState = appState,
                     isLoadingMore = state.value.isLoadingMore,
-                    onLoadMore = { viewModel.loadMoreSurahs(it) },
+                    onLoadMore = {  },
                     goToDetails = goToDetails
                 )
             }
@@ -86,7 +86,7 @@ fun HomeScreen(
 @Composable
 private fun HomeContent(
     innerPadding: PaddingValues,
-    surahs: List<Surah>,
+    surahs: List<SurahEntity>,
     isLoadingMore: Boolean = false,
     appState: QuranAppState,
     onLoadMore: (Int) -> Unit = {},
@@ -123,22 +123,22 @@ private fun HomeContent(
         items(surahs.size) { index ->
             val currentSurahs = surahs[index]
             SurahItem(
-                number = currentSurahs.number!!,
-                arabicName = currentSurahs.name!!,
-                englishName = currentSurahs.englishName!!,
-                surahType = currentSurahs.revelationType!!,
-                versesCount = currentSurahs.numberOfAyahs!!,
+                number = currentSurahs.number,
+                arabicName = currentSurahs.name,
+                englishName = currentSurahs.englishName,
+                surahType = currentSurahs.revelationType,
+                versesCount = currentSurahs.numberOfAyahs,
                 onClick = {
                     goToDetails(currentSurahs.number)
                 }
             )
 
         }
-        if (isLoadingMore) {
-            item {
-                LoadingIndicator()
-            }
-        }
+//        if (isLoadingMore) {
+//            item {
+//                LoadingIndicator()
+//            }
+//        }
     }
 }
 

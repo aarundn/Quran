@@ -25,6 +25,7 @@ import kotlinx.serialization.json.Json
 import javax.inject.Singleton
 
 
+
 @Module
 @InstallIn(SingletonComponent::class)
 object SurahModule {
@@ -32,15 +33,15 @@ object SurahModule {
     @OptIn(ExperimentalSerializationApi::class)
     @Provides
     @Singleton
-    fun KtorClientProvides():  HttpClient {
+    fun KtorClientProvides(): HttpClient {
         return HttpClient(OkHttp) {
             defaultRequest {
-                url ( "https://api.alquran.cloud/v1/" )
+                url("https://api.alquran.cloud/v1/")
             }
             install(Logging) {
                 logger = Logger.SIMPLE
             }
-            install(ContentNegotiation){
+            install(ContentNegotiation) {
                 json(
                     Json {
                         ignoreUnknownKeys = true
@@ -67,17 +68,17 @@ object SurahModule {
         return GetSurahsUseCase(surahRepository)
     }
 
-//    @Provides
-//    @Singleton
-//    fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase {
-//        return Room.databaseBuilder(
-//            context,
-//            AppDatabase::class.java,
-//            "quran_database"
-//        ).build()
-//    }
-//
-//    @Provides
-//    @Singleton
-//    fun provideSurahDao(appDatabase: AppDatabase) = appDatabase.surahDao()
+    @Provides
+    @Singleton
+    fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase {
+        return Room.databaseBuilder(
+            context,
+            AppDatabase::class.java,
+            "quran_database"
+        ).fallbackToDestructiveMigration().build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideSurahDao(appDatabase: AppDatabase) = appDatabase.surahDao()
 }

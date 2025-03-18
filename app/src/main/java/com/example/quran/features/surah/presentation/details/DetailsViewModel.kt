@@ -1,14 +1,17 @@
 package com.example.quran.features.surah.presentation.details
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
+import com.example.quran.data.SurahDao
 import com.example.quran.domain.usecases.GetSurahDetailsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -21,7 +24,8 @@ import javax.inject.Inject
 @HiltViewModel
 class DetailsViewModel @Inject constructor(
     private val detailsUseCase: GetSurahDetailsUseCase,
-    @ApplicationContext val context: Context
+    @ApplicationContext val context: Context,
+    private val surahDao: SurahDao
 ): ViewModel() {
 
 
@@ -39,12 +43,23 @@ class DetailsViewModel @Inject constructor(
 
 
     suspend fun getSurahDetails(surahNumber: Int) {
-        _state.update {
-            it.copy(isLoading = true)
-        }
-        detailsUseCase.invoke(surahNumber).collect{ surahs ->
+        viewModelScope.launch(IO) {
             _state.update {
-                it.copy(surahs = surahs.first(), isLoading = false)
+                it.copy(isLoading = true)
+            }
+            val ayahs = surahDao.getSurahDetail(surahNumber).first().ayahs
+            Log.d("DetailsViewModel","DetailsAyah$ayahs")
+            if (surahDao.getSurahDetail(surahNumber).first().ayahs.isNotEmpty()) {
+                getSurahDetails(surahNumber)
+            } else {
+                detailsUseCase.invoke(surahNumber).collect{ surahs ->
+                    surahDao.insertSurahDetail(surahs.first())
+                    _state.update {
+                        it.copy(
+                            surahs = surahDao.getSurahDetail(surahNumber).first(),
+                            isLoading = false)
+                    }
+                }
             }
         }
     }

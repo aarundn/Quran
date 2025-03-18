@@ -1,8 +1,9 @@
 package com.example.quran.features.surah.presentation.details
 
-import com.example.quran.domain.model.Surah
+import com.example.quran.data.SurahEntity
+
 
 data class DetailsState(
-    val surahs: Surah = Surah(),
+    val surahs: SurahEntity? = null,
     val isLoading: Boolean = false
 )

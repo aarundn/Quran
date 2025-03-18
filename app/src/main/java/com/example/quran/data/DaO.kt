@@ -8,14 +8,18 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface SurahDao {
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertSurahDetail(surah: SurahDetailEntity)
+    suspend fun insertSurahDetail(surah: SurahEntity)
 
-    @Query("SELECT * FROM surah_details WHERE number = :surahNumber")
-    suspend fun getSurahDetail(surahNumber: Int): SurahDetailEntity?
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertSurah(surah: List<SurahEntity>)
 
-    @Query("SELECT * FROM surah_details")
-    fun getAllSurahDetails(): Flow<List<SurahDetailEntity>>
+    @Query("SELECT * FROM surah")
+    fun getAllSurah(): List<SurahEntity>
+
+    @Query("SELECT * FROM surah WHERE number = :surahNumber")
+    fun getSurahDetail(surahNumber: Int): Flow<SurahEntity>
 
     @Query("SELECT EXISTS(SELECT 1 FROM surah_details WHERE number = :surahNumber)")
     suspend fun surahExists(surahNumber: Int): Boolean

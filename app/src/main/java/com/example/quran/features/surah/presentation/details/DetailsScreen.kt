@@ -28,7 +28,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.quran.R
 import com.example.quran.common.components.LoadingIndicator
 import com.example.quran.common.components.TopAppBar
-import com.example.quran.domain.model.Surah
+import com.example.quran.data.SurahEntity
 import com.example.quran.features.surah.presentation.components.AyahItem
 import com.example.quran.features.surah.presentation.components.DetailsBanner
 
@@ -57,7 +57,7 @@ fun DetailsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = state.surahs.englishName ?: stringResource(R.string.quran_app),
+                title = state.surahs?.englishName ?: stringResource(R.string.quran_app),
                 rightIcon = ImageVector.vectorResource(R.drawable.ic_back),
                 leftIcon = ImageVector.vectorResource(R.drawable.search),
                 onClick = onBack
@@ -91,7 +91,7 @@ fun DetailsScreen(
 
 @Composable
 fun DetailsContent(
-    surah: Surah,
+    surah: SurahEntity?,
     currentPosition: Long,
     duration: Long,
     modifier: Modifier,
@@ -105,14 +105,14 @@ fun DetailsContent(
     ) {
         item {
             DetailsBanner(
-                surahName =  surah.name ?: "",
-                surahType = surah.revelationType ?: "",
-                versesCount = surah.numberOfAyahs ?: 0,
-                englishName = surah.englishName ?: "",
+                surahName =  surah?.name ?: "",
+                surahType = surah?.revelationType ?: "",
+                versesCount = surah?.numberOfAyahs ?: 0,
+                englishName = surah?.englishName ?: "",
                 modifier = modifier
             )
         }
-        surah.ayahs?.size?.let {
+        surah?.ayahs?.size?.let {
             items(it) { index ->
                 Column(
                     modifier = Modifier.fillMaxWidth(),
