@@ -127,7 +127,7 @@ fun DetailsContent(
                         showTimeLine = clickedIndex == index,
                         onClick = {
                             clickedIndex = index
-                            viewModel.setMediaList(surah.ayahs[index].audio ?: "")
+                            viewModel.setMediaList(surah.ayahs[index])
                             viewModel.togglePlayback()
                         }
                     )

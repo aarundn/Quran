@@ -17,7 +17,13 @@ data class Ayahs(
     val number: Int? = null,
     val text: String? = null,
     val audio: String? = null,
-)
+    val audioSecondary: List<String>? = null,
+    val localAudioPath: String? = null
+){
+    fun getAudioUrl(): String? {
+        return audio ?: audioSecondary?.firstOrNull() // Use primary audio, fallback to first secondary URL
+    }
+}
 
 
 fun Surah.toEntity(): SurahEntity {

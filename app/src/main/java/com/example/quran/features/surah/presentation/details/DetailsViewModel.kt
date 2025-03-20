@@ -1,13 +1,14 @@
 package com.example.quran.features.surah.presentation.details
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import com.example.quran.data.SurahDao
+import com.example.quran.data.utils.AudioDownloader
+import com.example.quran.domain.model.Ayahs
 import com.example.quran.domain.usecases.GetSurahDetailsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -44,21 +46,25 @@ class DetailsViewModel @Inject constructor(
 
     suspend fun getSurahDetails(surahNumber: Int) {
         viewModelScope.launch(IO) {
-            _state.update {
-                it.copy(isLoading = true)
-            }
-            val ayahs = surahDao.getSurahDetail(surahNumber).first().ayahs
-            Log.d("DetailsViewModel","DetailsAyah$ayahs")
-            if (surahDao.getSurahDetail(surahNumber).first().ayahs.isNotEmpty()) {
-                getSurahDetails(surahNumber)
+            _state.update { it.copy(isLoading = true) }
+
+            val surah = surahDao.getSurahDetail(surahNumber).firstOrNull()
+
+            if (surah != null && surah.ayahs.all { it.audioSecondary != null }) {
+                _state.update { it.copy(surahs = surah, isLoading = false) }
             } else {
-                detailsUseCase.invoke(surahNumber).collect{ surahs ->
-                    surahDao.insertSurahDetail(surahs.first())
-                    _state.update {
-                        it.copy(
-                            surahs = surahDao.getSurahDetail(surahNumber).first(),
-                            isLoading = false)
+                detailsUseCase.invoke(surahNumber).collect { surahs ->
+                    val ayahsWithLocalAudio = surahs.first().ayahs.map { ayah ->
+                        val localPath = ayah.getAudioUrl()?.let {
+                            AudioDownloader(context).downloadAudio(it, ayah.number ?: 0)
+                        }
+                        ayah.copy(localAudioPath = localPath)
                     }
+
+                    val updatedSurah = surahs.first().copy(ayahs = ayahsWithLocalAudio)
+                    surahDao.insertSurahDetail(updatedSurah)
+
+                    _state.update { it.copy(surahs = updatedSurah, isLoading = false) }
                 }
             }
         }
@@ -85,8 +91,9 @@ class DetailsViewModel @Inject constructor(
             }
     }
 
-    fun setMediaList(url: String) {
-         val item = MediaItem.fromUri(url)
+    fun setMediaList(ayah: Ayahs) {
+        val url = ayah.localAudioPath ?: ayah.audio ?: return
+        val item = MediaItem.fromUri(url)
         exoPlayer.setMediaItem(item)
         exoPlayer.prepare()
         _duration.value = exoPlayer.duration
