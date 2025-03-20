@@ -1,6 +1,7 @@
 package com.example.quran.features.surah.presentation.details
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MediaItem
@@ -50,11 +51,16 @@ class DetailsViewModel @Inject constructor(
 
             val surah = surahDao.getSurahDetail(surahNumber).firstOrNull()
 
-            if (surah != null && surah.ayahs.all { it.audioSecondary != null }) {
+            if (surah != null && surah.ayahs.isNotEmpty()) {
+                println("🟢 Using cached data from DB: ${surah.ayahs.size} ayahs found")
                 _state.update { it.copy(surahs = surah, isLoading = false) }
             } else {
                 detailsUseCase.invoke(surahNumber).collect { surahs ->
+                    if (surah != null) {
+                        println("🟢 Using cached data from remote: ${surah.ayahs.size} ayahs found")
+                    }
                     val ayahsWithLocalAudio = surahs.first().ayahs.map { ayah ->
+
                         val localPath = ayah.getAudioUrl()?.let {
                             AudioDownloader(context).downloadAudio(it, ayah.number ?: 0)
                         }
@@ -63,7 +69,7 @@ class DetailsViewModel @Inject constructor(
 
                     val updatedSurah = surahs.first().copy(ayahs = ayahsWithLocalAudio)
                     surahDao.insertSurahDetail(updatedSurah)
-
+                    println("🟢 API Fetch: ${updatedSurah.ayahs.size} ayahs found")
                     _state.update { it.copy(surahs = updatedSurah, isLoading = false) }
                 }
             }
@@ -77,12 +83,40 @@ class DetailsViewModel @Inject constructor(
                 playWhenReady = false
                 addListener(object : Player.Listener {
                     override fun onPlaybackStateChanged(state: Int) {
+                        when (state) {
+                            Player.STATE_READY -> {
+                                _duration.value = exoPlayer.duration
+                            }
+                            Player.STATE_IDLE -> {
+                                _duration.value = 0
+                            }
+                            Player.STATE_BUFFERING -> {
+                                _state.update {
+                                    it.copy(
+                                        isPlaying = false
+                                    )
+                                }
+                            }
+                        }
                         if (state == Player.STATE_ENDED) {
                             pause()
+                            _state.update {
+                                it.copy(
+                                    isPlaying = false
+                                )
+                            }
+                            exoPlayer.seekTo(0)
+                            exoPlayer.pause()
                         }
                     }
 
                     override fun onIsPlayingChanged(isPlaying: Boolean) {
+                        _state.update { state ->
+                            state.copy(
+                                isPlaying = isPlaying,
+                                duration = exoPlayer.duration.toFloat()
+                            )
+                        }
                         if (isPlaying) {
                             startTrackingProgress()
                         }
@@ -93,6 +127,7 @@ class DetailsViewModel @Inject constructor(
 
     fun setMediaList(ayah: Ayahs) {
         val url = ayah.localAudioPath ?: ayah.audio ?: return
+        Log.d("DetailsViewModel", "setMediaList: $url")
         val item = MediaItem.fromUri(url)
         exoPlayer.setMediaItem(item)
         exoPlayer.prepare()
@@ -100,9 +135,16 @@ class DetailsViewModel @Inject constructor(
     }
 
     fun togglePlayback() {
-        exoPlayer.let {
-            if (it.isPlaying) it.pause() else it.play()
-        }
+            if (exoPlayer.isPlaying) {
+                exoPlayer.pause()
+            } else {
+                exoPlayer.play()
+            }
+            _state.update { state ->
+                state.copy(
+                    isPlaying = exoPlayer.isPlaying
+                )
+            }
     }
 
     private fun startTrackingProgress() {

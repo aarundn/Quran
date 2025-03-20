@@ -77,6 +77,7 @@ fun DetailsScreen(
                 else -> {
                     DetailsContent(
                         surah = state.surahs,
+                        isPlaying = state.isPlaying,
                         currentPosition = currentPosition,
                         duration = duration,
                         modifier = modifier,
@@ -92,13 +93,14 @@ fun DetailsScreen(
 @Composable
 fun DetailsContent(
     surah: SurahEntity?,
+    isPlaying : Boolean,
     currentPosition: Long,
     duration: Long,
     modifier: Modifier,
     viewModel: DetailsViewModel
 ) {
 
-    var clickedIndex by remember { mutableIntStateOf(0) }
+    var clickedIndex by remember { mutableIntStateOf(-1) }
     LazyColumn(
         modifier = modifier.padding(start = 16.dp, end = 16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -123,7 +125,7 @@ fun DetailsContent(
                         currentPosition = currentPosition,
                         duration = duration,
                         ayahs = surah.ayahs[index],
-                        audioIcon = if (clickedIndex == index)R.drawable.pause else R.drawable.play,
+                        audioIcon = if (isPlaying && clickedIndex == index) R.drawable.pause else R.drawable.play,
                         showTimeLine = clickedIndex == index,
                         onClick = {
                             clickedIndex = index
