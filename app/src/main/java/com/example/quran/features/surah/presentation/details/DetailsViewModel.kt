@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
-import com.example.quran.data.SurahDao
+import com.example.quran.data.local.SurahDao
 import com.example.quran.data.utils.AudioDownloader
 import com.example.quran.domain.model.Ayahs
 import com.example.quran.domain.usecases.GetSurahDetailsUseCase

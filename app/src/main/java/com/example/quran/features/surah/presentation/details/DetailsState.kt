@@ -1,7 +1,6 @@
 package com.example.quran.features.surah.presentation.details
 
-import com.example.quran.data.SurahEntity
-import kotlin.time.Duration
+import com.example.quran.domain.model.SurahEntity
 
 
 data class DetailsState(

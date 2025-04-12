@@ -1,5 +1,4 @@
 package com.example.quran.domain.model
-import com.example.quran.data.SurahEntity
 import kotlinx.serialization.Serializable
 
 

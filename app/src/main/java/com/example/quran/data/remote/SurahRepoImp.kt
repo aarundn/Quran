@@ -1,6 +1,6 @@
-package com.example.quran.data
+package com.example.quran.data.remote
 
-
+import com.example.quran.domain.model.SurahEntity
 import com.example.quran.domain.model.Surah
 import com.example.quran.domain.model.SurahDetailsResponse
 import com.example.quran.domain.model.SurahResponse
@@ -44,5 +44,3 @@ class SurahRepoImp @Inject constructor(
         }
     }
 }
-
-

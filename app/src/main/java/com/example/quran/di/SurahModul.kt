@@ -3,7 +3,7 @@ package com.example.quran.di
 
 import android.content.Context
 import androidx.room.Room
-import com.example.quran.data.AppDatabase
+import com.example.quran.data.local.AppDatabase
 import com.example.quran.domain.repository.SurahRepository
 import com.example.quran.domain.usecases.GetSurahDetailsUseCase
 import com.example.quran.domain.usecases.GetSurahsUseCase

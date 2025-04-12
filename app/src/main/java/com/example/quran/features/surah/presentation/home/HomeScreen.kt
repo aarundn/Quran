@@ -6,15 +6,10 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -27,7 +22,7 @@ import com.example.quran.R
 import com.example.quran.common.components.LoadingIndicator
 import com.example.quran.common.components.TopAppBar
 import com.example.quran.core.QuranAppState
-import com.example.quran.data.SurahEntity
+import com.example.quran.domain.model.SurahEntity
 import com.example.quran.features.surah.presentation.components.Banner
 import com.example.quran.features.surah.presentation.components.SurahItem
 

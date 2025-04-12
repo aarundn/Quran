@@ -1,6 +1,6 @@
 package com.example.quran.di
 
-import com.example.quran.data.SurahRepoImp
+import com.example.quran.data.remote.SurahRepoImp
 import com.example.quran.domain.repository.SurahRepository
 import dagger.Binds
 import dagger.Module

@@ -3,7 +3,7 @@ package com.example.quran.features.surah.presentation.home
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.quran.data.SurahDao
+import com.example.quran.data.local.SurahDao
 import com.example.quran.domain.repository.SurahRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers.IO

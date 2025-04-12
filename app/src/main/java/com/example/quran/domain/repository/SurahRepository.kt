@@ -2,7 +2,7 @@ package com.example.quran.domain.repository
 
 
 
-import com.example.quran.data.SurahEntity
+import com.example.quran.domain.model.SurahEntity
 import com.example.quran.domain.model.Surah
 import kotlinx.coroutines.flow.Flow
 

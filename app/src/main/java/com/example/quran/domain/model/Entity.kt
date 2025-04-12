@@ -1,8 +1,7 @@
-package com.example.quran.data
+package com.example.quran.domain.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.quran.domain.model.Ayahs
 
 
 @Entity(tableName = "surah_details")

@@ -1,6 +1,6 @@
 package com.example.quran.features.surah.presentation.home
 
-import com.example.quran.data.SurahEntity
+import com.example.quran.domain.model.SurahEntity
 
 
 data class HomeState(

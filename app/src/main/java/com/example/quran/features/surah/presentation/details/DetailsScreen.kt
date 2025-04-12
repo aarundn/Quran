@@ -28,7 +28,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.quran.R
 import com.example.quran.common.components.LoadingIndicator
 import com.example.quran.common.components.TopAppBar
-import com.example.quran.data.SurahEntity
+import com.example.quran.domain.model.SurahEntity
 import com.example.quran.features.surah.presentation.components.AyahItem
 import com.example.quran.features.surah.presentation.components.DetailsBanner
 
