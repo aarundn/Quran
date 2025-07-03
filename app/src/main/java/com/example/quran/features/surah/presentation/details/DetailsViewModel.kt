@@ -52,13 +52,9 @@ class DetailsViewModel @Inject constructor(
             val surah = surahDao.getSurahDetail(surahNumber).firstOrNull()
 
             if (surah != null && surah.ayahs.isNotEmpty()) {
-                println("🟢 Using cached data from DB: ${surah.ayahs.size} ayahs found")
                 _state.update { it.copy(surahs = surah, isLoading = false) }
             } else {
                 detailsUseCase.invoke(surahNumber).collect { surahs ->
-                    if (surah != null) {
-                        println("🟢 Using cached data from remote: ${surah.ayahs.size} ayahs found")
-                    }
                     val ayahsWithLocalAudio = surahs.first().ayahs.map { ayah ->
 
                         val localPath = ayah.getAudioUrl()?.let {
@@ -69,7 +65,6 @@ class DetailsViewModel @Inject constructor(
 
                     val updatedSurah = surahs.first().copy(ayahs = ayahsWithLocalAudio)
                     surahDao.insertSurahDetail(updatedSurah)
-                    println("🟢 API Fetch: ${updatedSurah.ayahs.size} ayahs found")
                     _state.update { it.copy(surahs = updatedSurah, isLoading = false) }
                 }
             }
@@ -127,7 +122,6 @@ class DetailsViewModel @Inject constructor(
 
     fun setMediaList(ayah: Ayahs) {
         val url = ayah.localAudioPath ?: ayah.audio ?: return
-        Log.d("DetailsViewModel", "setMediaList: $url")
         val item = MediaItem.fromUri(url)
         exoPlayer.setMediaItem(item)
         exoPlayer.prepare()

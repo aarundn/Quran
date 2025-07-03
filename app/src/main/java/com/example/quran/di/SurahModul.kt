@@ -6,7 +6,6 @@ import androidx.room.Room
 import com.example.quran.data.local.AppDatabase
 import com.example.quran.domain.repository.SurahRepository
 import com.example.quran.domain.usecases.GetSurahDetailsUseCase
-import com.example.quran.domain.usecases.GetSurahsUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,7 +24,6 @@ import kotlinx.serialization.json.Json
 import javax.inject.Singleton
 
 
-
 @Module
 @InstallIn(SingletonComponent::class)
 object SurahModule {
@@ -36,7 +34,7 @@ object SurahModule {
     fun KtorClientProvides(): HttpClient {
         return HttpClient(OkHttp) {
             defaultRequest {
-                url("https://api.alquran.cloud/v1/")
+                url("https://server-rahe.onrender.com/")
             }
             install(Logging) {
                 logger = Logger.SIMPLE
@@ -60,13 +58,13 @@ object SurahModule {
         return GetSurahDetailsUseCase(surahRepository)
     }
 
-    @Provides
-    @Singleton
-    fun provideGetSurahsUseCase(
-        surahRepository: SurahRepository
-    ): GetSurahsUseCase {
-        return GetSurahsUseCase(surahRepository)
-    }
+//    @Provides
+//    @Singleton
+//    fun provideGetSurahsUseCase(
+//        surahRepository: SurahRepository
+//    ): GetSurahsUseCase {
+//        return GetSurahsUseCase(surahRepository)
+//    }
 
     @Provides
     @Singleton

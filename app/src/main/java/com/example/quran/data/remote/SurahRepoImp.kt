@@ -1,5 +1,8 @@
 package com.example.quran.data.remote
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.example.quran.domain.model.SurahEntity
 import com.example.quran.domain.model.Surah
 import com.example.quran.domain.model.SurahDetailsResponse
@@ -17,14 +20,13 @@ class SurahRepoImp @Inject constructor(
     private val client: HttpClient
 ) : SurahRepository {
 
-    override suspend fun getSurahs(): Flow<List<SurahEntity>> = flow {
-        val surah = mutableListOf<SurahEntity>()
-        for (i in 0 until 114) {
-            val surahResponse: SurahResponse = client.get("surah").body()
-            surah.add(surahResponse.data[i].toEntity())
-        }
-        emit(surah)
+    override fun getPagedSurahs(): Flow<PagingData<Surah>> {
+        return Pager(
+            config = PagingConfig(pageSize = 10, enablePlaceholders = false),
+            pagingSourceFactory = { SurahPagingSource(client) }
+        ).flow
     }
+
 
     override suspend fun loadMoreSurahs(surahNumber: Int): Flow<Surah> = flow {
 

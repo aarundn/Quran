@@ -18,10 +18,14 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.quran.R
 import com.example.quran.common.components.LoadingIndicator
 import com.example.quran.common.components.TopAppBar
 import com.example.quran.core.QuranAppState
+import com.example.quran.domain.model.Surah
 import com.example.quran.domain.model.SurahEntity
 import com.example.quran.features.surah.presentation.components.Banner
 import com.example.quran.features.surah.presentation.components.SurahItem
@@ -35,7 +39,7 @@ fun HomeScreen(
 ) {
 
     val state = viewModel.state.collectAsStateWithLifecycle()
-
+    val surahs = viewModel.pagedSurahs.collectAsLazyPagingItems()
     Scaffold(
         modifier = modifier
             .fillMaxSize()
@@ -51,37 +55,25 @@ fun HomeScreen(
             )
         }
     ) { innerPadding ->
-        when {
 
-            state.value.isLoading -> {
-                LoadingIndicator()
-            }
-            state.value.surahs.isNotEmpty() -> {
                 HomeContent(
                     innerPadding,
-                    state.value.surahs,
+                    surahs = surahs,
                     appState = appState,
                     isLoadingMore = state.value.isLoadingMore,
                     onLoadMore = {  },
                     goToDetails = goToDetails
                 )
-            }
-            else -> {
-                Text(
-                    text = stringResource(R.string.no_data),
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.padding(16.dp)
-                )
-            }
+
         }
     }
 
-}
+
 
 @Composable
 private fun HomeContent(
     innerPadding: PaddingValues,
-    surahs: List<SurahEntity>,
+    surahs: LazyPagingItems<Surah>,
     isLoadingMore: Boolean = false,
     appState: QuranAppState,
     onLoadMore: (Int) -> Unit = {},
@@ -115,25 +107,35 @@ private fun HomeContent(
         item {
             Banner(modifier = Modifier)
         }
-        items(surahs.size) { index ->
+        items(surahs.itemCount) { index ->
             val currentSurahs = surahs[index]
             SurahItem(
-                number = currentSurahs.number,
-                arabicName = currentSurahs.name,
-                englishName = currentSurahs.englishName,
-                surahType = currentSurahs.revelationType,
-                versesCount = currentSurahs.numberOfAyahs,
+                number = currentSurahs?.number ?: 0,
+                arabicName = currentSurahs?.name ?: "",
+                englishName = currentSurahs?.englishName ?: "",
+                surahType = currentSurahs?.revelationType ?: "",
+                versesCount = currentSurahs?.numberOfAyahs ?: 0,
                 onClick = {
-                    goToDetails(currentSurahs.number)
+                    goToDetails(currentSurahs?.number ?: 0)
                 }
             )
 
         }
-//        if (isLoadingMore) {
-//            item {
-//                LoadingIndicator()
-//            }
-//        }
+        when (surahs.loadState.append) {
+            is LoadState.Error -> {
+                item {
+                    Text(text = "Error loading more Surahs")
+                }
+            }
+
+            is LoadState.Loading -> {
+                item {
+                    LoadingIndicator()
+                }
+            }
+
+            else -> {}
+        }
     }
 }
 
